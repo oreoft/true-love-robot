@@ -4,6 +4,7 @@
 from datetime import datetime
 
 import openai
+import time
 
 
 class ChatGPT():
@@ -16,11 +17,16 @@ class ChatGPT():
             openai.proxy = {"http": proxy, "https": proxy}
         self.conversation_list = {}
         self.system_content_msg = {"role": "system", "content": prompt}
+        self.count = 0
 
-    def get_answer(self, question: str, wxid: str) -> str:
+    def get_answer(self, question: str, wxid: str, config) -> str:
         # wxid或者roomid,个人时为微信id，群消息时为群id
-        self.updateMessage(wxid, question, "user")
-
+        self.updateMessage(wxid, question.replace("debug", "", 1), "user")
+        self.count += 1
+        real_key = config.get("key1") if self.count % 2 == 0 else config.get("key2")
+        openai.api_key = real_key
+        rsp = ''
+        start_time = time.time()
         try:
             ret = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
@@ -42,8 +48,13 @@ class ChatGPT():
             rsp = "发生未知错误：" + str(e0)
 
         # print(self.conversation_list[wxid])
-
-        return rsp
+        end_time = time.time()
+        cost = round(end_time - start_time, 2)
+        print("chat回答时间为：", cost, "秒")
+        if question.startswith('debug'):
+            return rsp + '\n\n' + '(cost: ' + str(cost) + 's, use: ' + real_key[-4:] + ')'
+        else:
+            return rsp
 
     def updateMessage(self, wxid: str, question: str, role: str) -> None:
         now_time = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
@@ -81,18 +92,19 @@ if __name__ == "__main__":
     if not config:
         exit(0)
 
-    key = config.get("key")
+    key1 = config.get("key1")
+    key2 = config.get("key2")
     api = config.get("api")
     proxy = config.get("proxy")
     prompt = config.get("prompt")
 
-    chat = ChatGPT(key, api, proxy, prompt)
+    chat = ChatGPT(key1, api, proxy, prompt)
 
     while True:
         q = input(">>> ")
         try:
             time_start = datetime.now()  # 记录开始时间
-            print(chat.get_answer(q, "wxid"))
+            print(chat.get_answer(q, "wxid"), config)
             time_end = datetime.now()  # 记录结束时间
 
             print(f"{round((time_end - time_start).total_seconds(), 2)}s")  # 计算的时间差为程序的执行时间，单位为秒/s

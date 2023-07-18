@@ -77,7 +77,7 @@ class Robot(Job):
             rsp = "你@我干嘛？"
         else:  # 接了 ChatGPT，智能回复
             q = re.sub(r"@.*?[\u2005|\s]", "", msg.content).replace(" ", "")
-            rsp = self.chat.get_answer(q, (msg.roomid if msg.from_group() else msg.sender))
+            rsp = self.chat.get_answer(q, (msg.roomid if msg.from_group() else msg.sender), self.config.CHATGPT)
 
         if rsp:
             if msg.from_group():
