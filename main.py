@@ -38,7 +38,7 @@ def main():
     robot.LOG.info("正在启动机器人···")
 
     # 机器人启动发送测试消息
-    robot.sendTextMsg("机器人启动成功！", "filehelper")
+    robot.sendTextMsg("真爱粉启动成功！", "wxid_tqn5yglpe9gj21")
 
     # 接收消息
     # robot.enableRecvMsg()     # 可能会丢消息？

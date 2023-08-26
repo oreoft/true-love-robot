@@ -32,7 +32,7 @@ class Robot(Job):
             self.chat = TigerBot(self.config.TIGERBOT)
         elif self.config.CHATGPT:
             cgpt = self.config.CHATGPT
-            self.chat = ChatGPT(cgpt.get("key"), cgpt.get("api"), cgpt.get("proxy"), cgpt.get("prompt"))
+            self.chat = ChatGPT(cgpt.get("key1"), cgpt.get("api"), cgpt.get("proxy"), cgpt.get("prompt"))
         else:
             self.chat = None
 
@@ -77,7 +77,7 @@ class Robot(Job):
             rsp = "你@我干嘛？"
         else:  # 接了 ChatGPT，智能回复
             q = re.sub(r"@.*?[\u2005|\s]", "", msg.content).replace(" ", "")
-            rsp = self.chat.get_answer(q, (msg.roomid if msg.from_group() else msg.sender), self.config.CHATGPT)
+            rsp = self.chat.get_answer(q, (msg.roomid if msg.from_group() else msg.sender), msg.sender, self.config.CHATGPT)
 
         if rsp:
             if msg.from_group():
@@ -127,7 +127,11 @@ class Robot(Job):
                     self.config.reload()
                     self.LOG.info("已更新")
             else:
-                self.toChitchat(msg)  # 闲聊
+                if msg.sender not in self.config.PRI:
+                    print("收到私聊, 消息进行过滤")
+                    return
+                else:
+                    self.toChitchat(msg)  # 闲聊
 
     def onMsg(self, msg: WxMsg) -> int:
         try:
