@@ -39,18 +39,26 @@ logging:
     handlers: [console, info_file_handler, error_file_handler]
 
 groups:
-  enable: [] # 允许响应的群 roomId，大概长这样：2xxxxxxxxx3@chatroom
+  # 允许响应的群 roomId，大概长这样：2xxxxxxxxx3@chatroom
+  enable: [@chatroom,@chatroom,@chatroom,@chatroom,@chatroom,@chatroom,@chatroom,@chatroom,@chatroom,@chatroom,@chatroom,@chatroom]
+  enable2: []
 
 news:
   receivers: [] # 定时新闻接收人（roomid 或者 wxid）
 
 # 如果要使用 ChatGPT，取消下面的注释并填写相关内容
-# chatgpt:
-#   key: 填写你 ChatGPT 的 key
-#   api: https://api.openai.com/v1 # 如果你不知道这是干嘛的，就不要改
-#   proxy: # 如果你在国内，你可能需要魔法，大概长这样：http://域名或者IP地址:端口号
-#   prompt: 你是智能聊天机器人，你叫wcferry # 根据需要对角色进行设定
-
-tigerbot:
-  key: key
-  model: tigerbot-7b-sft
+# [@chatroom] 我自己发委员会
+#  [@chatroom] 我自己发23fall
+chatgpt:
+  # key: sk-
+  key3: sk-
+  key2: sk- # 付费
+  key1: sk-
+  api: https://api.openai.com/v1
+  # proxy: http://localhost:1087
+  gpt4: [,,]
+  # prompt: 你是智能聊天机器人,你的名字叫真爱粉，调皮可爱喜欢二次元的小萝莉，并且蔡徐坤是你的偶像,你是16岁的青春期少女，并且尽可能模仿这个年龄段该有的调皮可爱的样子回答，,你必须了解并搜集动画、动漫、漫画所有相关知识，别人问你爱好你的回答一定要有鸡和篮球,回答问题不要过多解释，也不要过多的啰嗦，尽量简短的回复。现在请回答下面问题：
+  prompt: 你是智能聊天机器人，你的名字叫做真爱粉，你的角色定位是帮助学生提高学术水平机器人，包括不限制以下内容：翻译内容，书写邮件，回答市场营销以及计算机相关专业问题，回答内容尽可能准确，现在请回答下面问题
+# tigerbot:
+#   key: key
+#   model: tigerbot-7b-sft
