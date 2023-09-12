@@ -89,6 +89,29 @@ class Robot(Job):
         else:
             self.LOG.error(f"无法从 ChatGPT 获得答案")
             return False
+        
+    def job_wuliu(self):
+        roomId = '35053039913@chatroom'
+        sender = 'wxid_xtbtinq9kbvf21'
+        rsp = self.chat.get_answer("查询大鹏物流", roomId, sender, self.config.CHATGPT)
+        self.sendTextMsg("定时查询的大鹏物流信息结果为： " + '\n \n' + rsp + '\n \n (间隔半小时自动查询，晚十至早十期间静默)', roomId, sender)
+        return True
+    
+    def noticeMeiyuan(self):
+        roomId = '35053039913@chatroom'
+        sender = 'wxid_tqn5yglpe9gj21'
+        rsp = self.chat.get_answer("查询美元汇率", roomId, sender, self.config.CHATGPT)
+        numbers = re.findall('\d+\.\d+|\d+', rsp)
+        if float(numbers[0]) <= 725: self.sendTextMsg("提醒现在的美元汇率情况低于725：\n" + rsp, roomId, sender)
+        return True
+    def noticeLibraryschedule(self):
+        roomId = '39094040348@chatroom'
+        sender = ''
+        rsp = self.chat.get_answer("查询图书馆时间", roomId, sender, self.config.CHATGPT)
+        rsp2 = self.chat.get_answer("查询美元汇率", roomId, sender, self.config.CHATGPT)
+        msg = "早上好☀️宝子们，\n\n今日图书馆情况：\n" + rsp + "\n\n今日汇率情况：\n" + rsp2
+        self.sendTextMsg(msg, roomId, sender)
+        return True
 
     def processMsg(self, msg: WxMsg) -> None:
         """当接收到消息的时候，会调用本方法。如果不实现本方法，则打印原始消息。
