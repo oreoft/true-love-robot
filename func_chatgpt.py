@@ -45,15 +45,15 @@ class ChatGPT():
         self.updateMessage(wxid, question.replace("debug", "", 1), "user")
         self.count += 1
         cases = {
-            0: config.get("key1"),
-            1: config.get("key2"),
-            2: config.get("key3"),
+            0: self.config.get("key1"),
+            1: self.config.get("key2"),
+            2: self.config.get("key3"),
         }
         real_key = cases.get(self.count % 3, config.get("key1"))
         real_model = "gpt-3.5-turbo"
         # 如果是有权限访问gpt4的，直接走gpt4
-        if sender in config.get("gpt4") and ('gpt4' in question or 'GPT4' in question): 
-            real_key = config.get("key2")
+        if sender in self.config.get("gpt4") and ('gpt4' in question or 'GPT4' in question):
+            real_key = self.config.get("key2")
             real_model="gpt-4"
         openai.api_key = real_key
         rsp = ''
