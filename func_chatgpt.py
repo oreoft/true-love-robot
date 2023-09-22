@@ -12,28 +12,32 @@ import json
 
 class ChatGPT():
 
-    def __init__(self, key: str, api: str, proxy: str, prompt: str) -> None:
-        openai.api_key = key
+    def __init__(self, config) -> None:
+        self.config = config
         # 自己搭建或第三方代理的接口
-        openai.api_base = api
+        openai.api_base = config.get("api")
+        # 代理
+        proxy = config.get("proxy")
         if proxy:
             openai.proxy = {"http": proxy, "https": proxy}
         self.conversation_list = {}
-        self.system_content_msg = {"role": "system", "content": prompt}
+        self.system_content_msg = {"role": "system", "content": config.get("prompt")}
+        self.system_content_msg2 = {"role": "system", "content": config.get("prompt2")}
+        # 轮训负载key的计数器
         self.count = 0
 
-    def get_answer(self, question: str, wxid: str, sender: str, config) -> str:
+    def get_answer(self, question: str, wxid: str, sender: str) -> str:
         # 特殊逻辑
         if question.startswith('查询'):
-            if '大鹏签证' in question and sender in config.get("gpt4"):
+            if '大鹏签证' in question:
                 return self.reqQianzheng()
             if '美元汇率' in question:
                 return self.searchMeiyuan()
             if '图书馆时间' in question:
                 return self.librarySchedule()
-            if '大鹏物流' in question and sender in config.get("gpt4"):
+            if '大鹏物流' in question:
                 return self.reqWuliu('https://trace.fkdex.com/sf/SF1388111071920:0069')
-            if '测试物流' in question and sender in config.get("gpt4"):
+            if '测试物流' in question:
                 return self.reqWuliu('https://trace.fkdex.com/sf/SF1420456743485:8020')
             return '该查询任务无法找到'
             
@@ -49,7 +53,7 @@ class ChatGPT():
         real_model = "gpt-3.5-turbo"
         # 如果是有权限访问gpt4的，直接走gpt4
         if sender in config.get("gpt4") and ('gpt4' in question or 'GPT4' in question): 
-            real_key=config.get("key2")
+            real_key = config.get("key2")
             real_model="gpt-4"
         openai.api_key = real_key
         rsp = ''
@@ -205,12 +209,11 @@ class ChatGPT():
 
     def updateMessage(self, wxid: str, question: str, role: str) -> None:
         now_time = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-
         time_mk = "当需要回答时间时请直接参考回复:"
         # 初始化聊天记录,组装系统信息
         if wxid not in self.conversation_list.keys():
             question_ = [
-                self.system_content_msg,
+                self.system_content_msg if wxid not in self.config.get("gpt4") else self.system_content_msg2,
                 {"role": "system", "content": "" + time_mk + now_time}
             ]
             self.conversation_list[wxid] = question_
@@ -238,19 +241,14 @@ if __name__ == "__main__":
     config = Config().CHATGPT
     if not config:
         exit(0)
-    api = config.get("api")
-    proxy = config.get("proxy")
-    prompt = config.get("prompt")
-
-    chat = ChatGPT(config.get("key1"), api, proxy, prompt)
-
+    chat = ChatGPT(config)
+    # 测试程序
     while True:
         q = input(">>> ")
         try:
             time_start = datetime.now()  # 记录开始时间
-            # print(chat.get_answer(q, "wxid", "wxid"), config)
+            print(chat.get_answer(q, "wxid_tqn5yglpe9gj21", "wxid_tqn5yglpe9gj21"))
             time_end = datetime.now()  # 记录结束时间
-
             print(f"{round((time_end - time_start).total_seconds(), 2)}s")  # 计算的时间差为程序的执行时间，单位为秒/s
         except Exception as e:
             print(e)
