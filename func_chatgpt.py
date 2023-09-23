@@ -49,7 +49,7 @@ class ChatGPT():
             1: self.config.get("key2"),
             2: self.config.get("key3"),
         }
-        real_key = cases.get(self.count % 3, config.get("key1"))
+        real_key = cases.get(self.count % 3, self.config.get("key1"))
         real_model = "gpt-3.5-turbo"
         # 如果是有权限访问gpt4的，直接走gpt4
         if sender in self.config.get("gpt4") and ('gpt4' in question or 'GPT4' in question):
