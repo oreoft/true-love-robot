@@ -13,6 +13,7 @@ from configuration import Config
 from func_chatgpt import ChatGPT
 from func_chengyu import cy
 from func_news import News
+from func_search import SearchTask
 from func_tigerbot import TigerBot
 from job_mgmt import Job
 
@@ -73,18 +74,24 @@ class Robot(Job):
     def toChitchat(self, msg: WxMsg) -> bool:
         """闲聊，接入 ChatGPT
         """
-        if not self.chat:  # 没接 ChatGPT，固定回复
+        q = re.sub(r"@.*?[\u2005|\s]", "", msg.content).replace(" ", "")
+        if  q.startswith('查询'):  # 如果是特殊任务
+            rsp = SearchTask.do_search(q)
+        elif q.startswith('claude'): # 如果是claude
+            rsp = "待完成"
+        elif not self.chat:  # 没接 ChatGPT，固定回复
             rsp = "你@我干嘛？"
-        else:  # 接了 ChatGPT，智能回复
-            q = re.sub(r"@.*?[\u2005|\s]", "", msg.content).replace(" ", "")
+        else:
             rsp = self.chat.get_answer(q, (msg.roomid if msg.from_group() else msg.sender), msg.sender)
 
+
+
+        # 判断返回值
         if rsp:
             if msg.from_group():
                 self.sendTextMsg(rsp, msg.roomid, msg.sender)
             else:
                 self.sendTextMsg(rsp, msg.sender)
-
             return True
         else:
             self.LOG.error(f"无法从 ChatGPT 获得答案")
