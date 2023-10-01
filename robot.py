@@ -32,7 +32,7 @@ class Robot(Job):
         self.searchTask = SearchTask()
         self.claude = Claude(self.config.CLAUDE)
         # 选择当前默认的语言模型
-        enable_bot = self.config.get('enable-bot', 'chatgpt')
+        enable_bot = self.config.ENABLE_BOT
         if 'chatgpt' == enable_bot:
             self.chat = ChatGPT(self.config.CHATGPT)
         elif 'claude' == enable_bot:
