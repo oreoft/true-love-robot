@@ -30,5 +30,6 @@ class Config(object):
         self.GROUPS = yconfig["groups"]["enable"]
         self.PRI = yconfig["groups"]["enable2"]
         self.CHATGPT = yconfig.get("chatgpt")
+        self.CLAUDE = yconfig.get("claude")
         self.NEWS = yconfig["news"]["receivers"]
         self.TIGERBOT = yconfig.get("tigerbot")

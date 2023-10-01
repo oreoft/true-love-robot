@@ -12,6 +12,7 @@ from wcferry import Wcf, WxMsg
 from configuration import Config
 from func_chatgpt import ChatGPT
 from func_chengyu import cy
+from func_claude import Claude
 from func_news import News
 from func_search import SearchTask
 from func_tigerbot import TigerBot
@@ -28,12 +29,16 @@ class Robot(Job):
         self.LOG = logging.getLogger("Robot")
         self.wxid = self.wcf.get_self_wxid()
         self.allContacts = self.getAllContacts()
-
-        if self.config.TIGERBOT:
+        self.searchTask = SearchTask()
+        self.claude = Claude(self.config.CLAUDE)
+        # 选择当前默认的语言模型
+        enable_bot = self.config.get('enable-bot', 'chatgpt')
+        if 'chatgpt' == enable_bot:
+            self.chat = ChatGPT(self.config.CHATGPT)
+        elif 'claude' == enable_bot:
+            self.chat = self.claude
+        elif 'tigerbot' == enable_bot:
             self.chat = TigerBot(self.config.TIGERBOT)
-        elif self.config.CHATGPT:
-            cgpt = self.config.CHATGPT
-            self.chat = ChatGPT(cgpt)
         else:
             self.chat = None
 
@@ -76,15 +81,13 @@ class Robot(Job):
         """
         q = re.sub(r"@.*?[\u2005|\s]", "", msg.content).replace(" ", "")
         if  q.startswith('查询'):  # 如果是特殊任务
-            rsp = SearchTask.do_search(q)
-        elif q.startswith('claude'): # 如果是claude
-            rsp = "待完成"
+            rsp = self.searchTask.do_search(q)
+        elif q.startswith('claude') and self.claude: # 如果是claude并且不为空
+            rsp = self.claude.get_answer(q, (msg.roomid if msg.from_group() else msg.sender), msg.sender)
         elif not self.chat:  # 没接 ChatGPT，固定回复
             rsp = "你@我干嘛？"
         else:
             rsp = self.chat.get_answer(q, (msg.roomid if msg.from_group() else msg.sender), msg.sender)
-
-
 
         # 判断返回值
         if rsp:
