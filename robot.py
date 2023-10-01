@@ -103,21 +103,24 @@ class Robot(Job):
     def job_wuliu(self):
         roomId = '35053039913@chatroom'
         sender = 'wxid_xtbtinq9kbvf21'
-        rsp = self.chat.get_answer("查询大鹏物流", roomId, sender)
+        rsp = self.searchTask.do_search("查询大鹏物流")
         self.sendTextMsg("定时查询的大鹏物流信息结果为： " + '\n \n' + rsp + '\n \n (间隔半小时自动查询，晚十至早十期间静默)', roomId, sender)
         return True
     
     def noticeMeiyuan(self):
         roomId = '35053039913@chatroom'
         sender = 'wxid_tqn5yglpe9gj21'
-        rsp = self.chat.get_answer("查询美元汇率", roomId, sender)
+        rsp = self.searchTask.do_search("查询美元汇率")
         numbers = re.findall('\d+\.\d+|\d+', rsp)
-        if float(numbers[0]) <= 725: self.sendTextMsg("提醒现在的美元汇率情况低于725：\n" + rsp, roomId, sender)
+        print(numbers)
+        if len(numbers) > 2 and float(numbers[2]) <= 725:
+            print()
+            # self.sendTextMsg("提醒现在的美元汇率情况低于725：\n" + rsp, roomId, sender)
         return True
     def noticeLibraryschedule(self):
         roomId = '39094040348@chatroom'
         sender = ''
-        rsp = self.chat.get_answer("查询图书馆时间", roomId, sender)
+        rsp = self.searchTask.do_search("查询图书馆时间")
         rsp2 = self.chat.get_answer("查询美元汇率", roomId, sender)
         msg = "早上好☀️宝子们，\n\n今日图书馆情况：\n" + rsp + "\n\n今日汇率情况：\n" + rsp2
         self.sendTextMsg(msg, roomId, sender)
