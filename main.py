@@ -8,6 +8,8 @@ from wcferry import Wcf
 import server
 from configuration import Config
 from robot import Robot
+from threading import Thread
+from functools import partial
 
 
 def weather_report(robot: Robot) -> None:
@@ -46,7 +48,8 @@ def main():
     robot.enableReceivingMsg()  # 加队列
 
     # 启用http监听
-    server.enableHTTP(config, robot)
+    flask_thread = Thread(target=partial(server.enableHTTP, config, robot))
+    flask_thread.start()
 
     # 每天 7 点发送天气预报
     # robot.onEveryTime("07:00", weather_report, robot=robot)
@@ -59,7 +62,7 @@ def main():
     # robot.onEverySeconds(30, robot.noticeMeiyuan)
     # robot.onEverySeconds(30, robot.noticeLibraryschedule)
     robot.onEveryTime("07:00", robot.noticeLibraryschedule)
-
+    print("智信这里")
     # 让机器人一直跑
     robot.keepRunningAndBlockProcess()
 
