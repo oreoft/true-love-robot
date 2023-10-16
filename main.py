@@ -5,6 +5,7 @@ import signal
 
 from wcferry import Wcf
 
+import server
 from configuration import Config
 from robot import Robot
 
@@ -43,6 +44,9 @@ def main():
     # 接收消息
     # robot.enableRecvMsg()     # 可能会丢消息？
     robot.enableReceivingMsg()  # 加队列
+
+    # 启用http监听
+    server.enableHTTP(config, robot)
 
     # 每天 7 点发送天气预报
     # robot.onEveryTime("07:00", weather_report, robot=robot)

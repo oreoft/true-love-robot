@@ -6,3 +6,4 @@ requests
 schedule
 bs4
 wcferry>=39.0.0.1
+flask
