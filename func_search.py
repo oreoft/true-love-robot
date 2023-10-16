@@ -159,7 +159,7 @@ class SearchTask():
             json_str = response.text
             data = json.loads(json_str[4:])
             hours = data[0][1][0][14][203][1]
-            return "The gym is {} Today's Hours: {}".format(hours[-1][0].upper(), hours[0][3][0][0])
+            return "The gym is {} \nToday's Hours: {}".format(hours[-1][0].upper(), hours[0][3][0][0])
         except Exception as e:
             # 发生异常 这里通知我
             return ""

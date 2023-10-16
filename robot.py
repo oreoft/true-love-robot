@@ -127,7 +127,7 @@ class Robot(Job):
         msg = "早上好☀️宝子们，\n\n"
         if rsp != "": msg = msg + "今日图书馆情况：\n" + rsp + "\n\n"
         if rsp3 != "": msg = msg + "今日gym情况：\n" + rsp3 + "\n\n"
-        if rsp2 != "": msg = msg + "今日汇率情况：\n" + rsp2 + "\n\n"
+        if rsp2 != "": msg = msg + "今日汇率情况：\n" + rsp2
 
         "\n\n今日汇率情况：\n" + rsp2
         self.sendTextMsg(msg, roomId, sender)
