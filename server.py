@@ -8,6 +8,14 @@ token = ''
 robot_g: Robot
 receiver_map = {}
 
+@app.route('/')
+def root():
+    return "pong"
+
+@app.route('/ping')
+def ping():
+    return "pong"
+
 @app.route('/send-msg', methods=['post'])
 def hello_world():
     print("请求过来", flask.request.json)
