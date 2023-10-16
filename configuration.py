@@ -34,4 +34,4 @@ class Config(object):
         self.CLAUDE = yconfig.get("claude")
         self.NEWS = yconfig["news"]["receivers"]
         self.TIGERBOT = yconfig.get("tigerbot")
-        self.HTTP = yconfig.get("HTTP")
+        self.HTTP = yconfig.get("http")
