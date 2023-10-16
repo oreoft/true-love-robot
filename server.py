@@ -20,8 +20,8 @@ def ping():
 def hello_world():
     print("请求过来", flask.request.json)
     if flask.request.json.get('token') in token:
-        send_receiver = flask.request.json.get('send_receiver')
-        at_receiver = flask.request.json.get('at_receiver')
+        send_receiver = flask.request.json.get('sendReceiver')
+        at_receiver = flask.request.json.get('atReceiver')
         content = flask.request.json.get('content')
         #
         if (not receiver_map.get(send_receiver)) or not content:
