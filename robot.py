@@ -121,7 +121,7 @@ class Robot(Job):
         roomId = '39094040348@chatroom'
         sender = ''
         rsp = self.searchTask.do_search("查询图书馆时间")
-        rsp2 = self.chat.get_answer("查询美元汇率", roomId, sender)
+        rsp2 = self.searchTask.do_search("查询美元汇率")
         msg = "早上好☀️宝子们，\n\n今日图书馆情况：\n" + rsp + "\n\n今日汇率情况：\n" + rsp2
         self.sendTextMsg(msg, roomId, sender)
         return True
