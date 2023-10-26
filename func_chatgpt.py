@@ -62,9 +62,11 @@ class ChatGPT():
         except openai.error.RateLimitError as e4:
             rsp = "你们问的太快了，回答不过来啦，得再问一遍哦"
         except openai.error.APIError as e5:
-            rsp = "OpenAI API 返回了错误：" + str(e5)
+            rsp = "OpenAI 返回了一个错误, 稍后再试试捏"
+            print(str(e5))
         except Exception as e0:
-            rsp = "发生未知错误：" + str(e0)
+            rsp = "发生未知错误, 稍后再试试捏"
+            print(str(e0))
 
         # print(self.conversation_list[wxid])
         end_time = time.time()

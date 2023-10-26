@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import logging
+import os
 import re
 import time
 import xml.etree.ElementTree as ET
+from datetime import datetime
 from queue import Empty
 from threading import Thread
 
@@ -18,7 +20,6 @@ from func_search import SearchTask
 from func_tigerbot import TigerBot
 from job_mgmt import Job
 
-
 class Robot(Job):
     """个性化自己的机器人
     """
@@ -30,7 +31,9 @@ class Robot(Job):
         self.wxid = self.wcf.get_self_wxid()
         self.allContacts = self.getAllContacts()
         self.searchTask = SearchTask()
-        self.claude = Claude(self.config.CLAUDE)
+        self.claude = None
+        if self.config.CLAUDE:
+            self.claude = Claude(self.config.CLAUDE)
         # 选择当前默认的语言模型
         enable_bot = self.config.ENABLE_BOT
         if 'chatgpt' == enable_bot:
@@ -99,14 +102,14 @@ class Robot(Job):
         else:
             self.LOG.error(f"无法从 ChatGPT 获得答案")
             return False
-        
+
     def job_wuliu(self):
         roomId = '35053039913@chatroom'
         sender = 'wxid_xtbtinq9kbvf21'
         rsp = self.searchTask.do_search("查询大鹏物流")
         self.sendTextMsg("定时查询的大鹏物流信息结果为： " + '\n \n' + rsp + '\n \n (间隔半小时自动查询，晚十至早十期间静默)', roomId, sender)
         return True
-    
+
     def noticeMeiyuan(self):
         roomId = '35053039913@chatroom'
         sender = 'wxid_tqn5yglpe9gj21'
@@ -131,6 +134,14 @@ class Robot(Job):
 
         "\n\n今日汇率情况：\n" + rsp2
         self.sendTextMsg(msg, roomId, sender)
+        return True
+
+    def noticeMoyuSchedule(self):
+        roomId = '20923342619@chatroom'
+        # roomId = '2666401439@chatroom'
+        img_dir = os.path.dirname(os.path.abspath(__file__)) + '/moyu-jpg/' + datetime.now().strftime('%m-%d-%Y') + '.jpg'
+        ret = self.wcf.send_image(img_dir, roomId)
+        self.LOG.info(f"send_image: {ret}")
         return True
 
     def processMsg(self, msg: WxMsg) -> None:
