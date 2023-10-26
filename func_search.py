@@ -15,6 +15,8 @@ class SearchTask():
             return self.reqQianzheng()
         if '美元汇率' in question:
             return self.searchMeiyuan()
+        if '澳币汇率' in question:
+            return self.searchAoyuan()
         if '图书馆时间' in question:
             return self.librarySchedule()
         if '大鹏物流' in question:
@@ -133,6 +135,38 @@ class SearchTask():
         response = requests.request("POST", url, headers=headers, data=payload)
         s = BeautifulSoup(response.text, features="html.parser").text
         s1 = s.strip().split('美元')[2].strip().replace(' ', '')
+        # print(s1)
+        arr = s1.split('\n')
+        str = '现汇买入价:' + arr[0].strip() + ',\n现钞买入价:' + arr[2].strip() + ',\n现汇卖出价:' + arr[4].strip() + ',\n现钞卖出价:' + arr[6].strip() + ',\n中行折算价:' + arr[8].strip() + ',\n发布时间:' + arr[10].strip()
+        return str
+
+    def searchAoyuan(self) -> str:
+        url = "https://srh.bankofchina.com/search/whpj/search_cn.jsp"
+        payload = 'erectDate=&nothing=&pjname=%E6%BE%B3%E5%A4%A7%E5%88%A9%E4%BA%9A%E5%85%83&head=head_620.js&bottom=bottom_591.js'
+        headers = {
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+            'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
+            'Cache-Control': 'no-cache',
+            'Connection': 'keep-alive',
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Cookie': 'JSESSIONID=00001CdOkfmL1j6G9cXi9ak2N4F:-1',
+            'Origin': 'https://srh.bankofchina.com',
+            'Pragma': 'no-cache',
+            'Referer': 'https://srh.bankofchina.com/search/whpj/search_cn.jsp',
+            'Sec-Fetch-Dest': 'document',
+            'Sec-Fetch-Mode': 'navigate',
+            'Sec-Fetch-Site': 'same-origin',
+            'Sec-Fetch-User': '?1',
+            'Upgrade-Insecure-Requests': '1',
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36',
+            'sec-ch-ua': '"Chromium";v="116", "Not)A;Brand";v="24", "Google Chrome";v="116"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"macOS"'
+        }
+
+        response = requests.request("POST", url, headers=headers, data=payload)
+        s = BeautifulSoup(response.text, features="html.parser").text
+        s1 = s.strip().split('澳大利亚元')[2].strip().replace(' ', '')
         # print(s1)
         arr = s1.split('\n')
         str = '现汇买入价:' + arr[0].strip() + ',\n现钞买入价:' + arr[2].strip() + ',\n现汇卖出价:' + arr[4].strip() + ',\n现钞卖出价:' + arr[6].strip() + ',\n中行折算价:' + arr[8].strip() + ',\n发布时间:' + arr[10].strip()

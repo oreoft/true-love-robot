@@ -135,6 +135,17 @@ class Robot(Job):
         "\n\n今日汇率情况：\n" + rsp2
         self.sendTextMsg(msg, roomId, sender)
         return True
+    def noticeAoYuanschedule(self):
+        roomId = '39121926591@chatroom'
+        # roomId = '2666401439@chatroom'
+        sender = ''
+        rsp = self.searchTask.do_search("查询澳币汇率")
+        rsp2 = self.searchTask.do_search("查询美元汇率")
+        msg = "早上好☀️宝宝，\n\n"
+        if rsp != "": msg = msg + "今日澳币汇率情况：\n" + rsp + "\n\n"
+        if rsp != "": msg = msg + "今日美元汇率情况：\n" + rsp2
+        self.sendTextMsg(msg, roomId, sender)
+        return True
 
     def noticeMoyuSchedule(self):
         roomId = '20923342619@chatroom'
