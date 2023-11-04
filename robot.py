@@ -148,11 +148,23 @@ class Robot(Job):
         return True
 
     def noticeMoyuSchedule(self):
-        roomId = '20923342619@chatroom'
+        roomIdDachang = '20923342619@chatroom'
+        roomIdB = '34977591657@chatroom'
         # roomId = '2666401439@chatroom'
-        img_dir = os.path.dirname(os.path.abspath(__file__)) + '/moyu-jpg/' + datetime.now().strftime('%m-%d-%Y') + '.jpg'
-        ret = self.wcf.send_image(img_dir, roomId)
-        self.LOG.info(f"send_image: {ret}")
+        moyu_dir = os.path.dirname(os.path.abspath(__file__)) + '/moyu-jpg/' + datetime.now().strftime('%m-%d-%Y') + '.jpg'
+        zaobao_dir = os.path.dirname(os.path.abspath(__file__)) + '/zaobao-jpg/' + datetime.now().strftime('%m-%d-%Y') + '.jpg'
+
+        self.sendTextMsg('早上好☀️家人萌~', roomIdDachang, '')
+        moyuRes = self.wcf.send_image(moyu_dir, roomIdDachang)
+        zaobaoRes = self.wcf.send_image(zaobao_dir, roomIdDachang)
+        self.LOG.info(f"send_image: {moyuRes}")
+        self.LOG.info(f"send_image: {zaobaoRes}")
+
+        self.sendTextMsg('早上好☀️家人萌~', roomIdB, '')
+        moyuRes = self.wcf.send_image(moyu_dir, roomIdB)
+        zaobaoRes = self.wcf.send_image(zaobao_dir, roomIdB)
+        self.LOG.info(f"send_image: {moyuRes}")
+        self.LOG.info(f"send_image: {zaobaoRes}")
         return True
 
     def processMsg(self, msg: WxMsg) -> None:
