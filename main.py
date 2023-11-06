@@ -7,7 +7,7 @@ from wcferry import Wcf
 
 import server
 from configuration import Config
-from job_task import asyncDownloadFile
+from job_task import asyncDownloadFile, asyncDownloadMoyuFile
 from robot import Robot
 from threading import Thread
 from functools import partial
@@ -63,6 +63,7 @@ def main():
     robot.onEveryTime("07:00", robot.noticeLibraryschedule)
     robot.onEveryTime("18:00", robot.noticeAoYuanschedule)
     robot.onEveryTime("20:00", asyncDownloadFile)
+    robot.onEveryTime("20:01", asyncDownloadMoyuFile)
     robot.onEveryTime("20:05", robot.noticeMoyuSchedule)
     # 测试
     # robot.onEverySeconds(30, robot.noticeAoYuanschedule)

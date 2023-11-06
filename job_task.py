@@ -4,9 +4,10 @@ import os
 import urllib.request
 from datetime import datetime
 
-executor = concurrent.futures.ThreadPoolExecutor(max_workers=2)
+executor = concurrent.futures.ThreadPoolExecutor(max_workers=3)
 def asyncDownloadFile():
     executor.submit(downloadZaobaoFile)
+def asyncDownloadMoyuFile():
     executor.submit(downloadMoyuFile)
 
 
