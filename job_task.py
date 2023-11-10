@@ -2,6 +2,7 @@ import concurrent
 from concurrent import futures
 import os
 import urllib.request
+import requests
 from datetime import datetime
 
 executor = concurrent.futures.ThreadPoolExecutor(max_workers=3)
@@ -37,12 +38,17 @@ def downloadZaobaoFile():
     local_filename = f'{current_date}.jpg'
     # 构建完整的文件路径
     full_file_path = os.path.join(download_directory, local_filename)
-    # 指定要下载的文件的URL
-    file_url = "https://api.vvhan.com/api/60s"
-    # 使用urllib.request库下载文件并保存到指定的位置
-    urllib.request.urlretrieve(file_url, full_file_path)
+
+    # 获取文件内容
+    url = "https://v2.alapi.cn/api/zaobao"
+    payload = "token=ODECJI71rCNDt6DO&format=image"
+    headers = {'Content-Type': "application/x-www-form-urlencoded"}
+    response = requests.request("POST", url, data=payload, headers=headers)
+
+    # 保存到指定的位置
+    with open(full_file_path, 'wb') as file:
+        file.write(response.content)
     print(f'{local_filename} 已下载到 {download_directory}')
 
 if __name__ == "__main__":
     downloadZaobaoFile()
-    downloadMoyuFile()
