@@ -17,6 +17,7 @@ from func_chengyu import cy
 from func_claude import Claude
 from func_news import News
 from func_search import SearchTask
+from func_task import RunTask
 from func_tigerbot import TigerBot
 from job_mgmt import Job
 
@@ -31,6 +32,7 @@ class Robot(Job):
         self.wxid = self.wcf.get_self_wxid()
         self.allContacts = self.getAllContacts()
         self.searchTask = SearchTask()
+        self.runTask = RunTask(self.config.GITHUB)
         self.claude = None
         if self.config.CLAUDE:
             self.claude = Claude(self.config.CLAUDE)
@@ -85,6 +87,8 @@ class Robot(Job):
         q = re.sub(r"@.*?[\u2005|\s]", "", msg.content).replace(" ", "")
         if  q.startswith('查询'):  # 如果是特殊任务
             rsp = self.searchTask.do_search(q)
+        elif q.startswith('执行'):
+            rsp = self.runTask.do_run(q, msg.sender)
         elif q.startswith('claude') and self.claude: # 如果是claude并且不为空
             rsp = self.claude.get_answer(q, (msg.roomid if msg.from_group() else msg.sender), msg.sender)
         elif not self.chat:  # 没接 ChatGPT，固定回复

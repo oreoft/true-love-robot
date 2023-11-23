@@ -33,5 +33,6 @@ class Config(object):
         self.ENABLE_BOT = yconfig.get("enable-bot")
         self.CLAUDE = yconfig.get("claude")
         self.NEWS = yconfig["news"]["receivers"]
+        self.GITHUB = yconfig["github"]
         self.TIGERBOT = yconfig.get("tigerbot")
         self.HTTP = yconfig.get("http")
