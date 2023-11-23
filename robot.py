@@ -21,6 +21,7 @@ from func_task import RunTask
 from func_tigerbot import TigerBot
 from job_mgmt import Job
 
+
 class Robot(Job):
     """个性化自己的机器人
     """
@@ -85,13 +86,13 @@ class Robot(Job):
         """闲聊，接入 ChatGPT
         """
         q = re.sub(r"@.*?[\u2005|\s]", "", msg.content).replace(" ", "")
-        if  q.startswith('查询'):  # 如果是特殊任务
-            self.LOG.info(f"收到:{msg.sender}, 查询任务:{msg}")
+        if q.startswith('查询'):  # 如果是特殊任务
+            self.LOG.info(f"收到:{msg.sender}, 查询任务:{q}")
             rsp = self.searchTask.do_search(q)
         elif q.startswith('执行'):
-            self.LOG.info(f"收到:{msg.sender}, 执行任务:{msg}")
+            self.LOG.info(f"收到:{msg.sender}, 执行任务:{q}")
             rsp = self.runTask.do_run(q, msg.sender)
-        elif q.startswith('claude') and self.claude: # 如果是claude并且不为空
+        elif q.startswith('claude') and self.claude:  # 如果是claude并且不为空
             rsp = self.claude.get_answer(q, (msg.roomid if msg.from_group() else msg.sender), msg.sender)
         elif not self.chat:  # 没接 ChatGPT，固定回复
             rsp = "你@我干嘛？"
@@ -113,7 +114,9 @@ class Robot(Job):
         roomId = '35053039913@chatroom'
         sender = 'wxid_xtbtinq9kbvf21'
         rsp = self.searchTask.do_search("查询大鹏物流")
-        self.sendTextMsg("定时查询的大鹏物流信息结果为： " + '\n \n' + rsp + '\n \n (间隔半小时自动查询，晚十至早十期间静默)', roomId, sender)
+        self.sendTextMsg(
+            "定时查询的大鹏物流信息结果为： " + '\n \n' + rsp + '\n \n (间隔半小时自动查询，晚十至早十期间静默)', roomId,
+            sender)
         return True
 
     def noticeMeiyuan(self):
@@ -126,6 +129,7 @@ class Robot(Job):
             print()
             # self.sendTextMsg("提醒现在的美元汇率情况低于725：\n" + rsp, roomId, sender)
         return True
+
     def noticeLibraryschedule(self):
         roomId = '39094040348@chatroom'
         # roomId = '2666401439@chatroom'
@@ -141,6 +145,7 @@ class Robot(Job):
         "\n\n今日汇率情况：\n" + rsp2
         self.sendTextMsg(msg, roomId, sender)
         return True
+
     def noticeAoYuanschedule(self):
         roomId = '39121926591@chatroom'
         # roomId = '2666401439@chatroom'
@@ -157,8 +162,10 @@ class Robot(Job):
         roomIdDachang = '20923342619@chatroom'
         roomIdB = '34977591657@chatroom'
         # roomId = '2666401439@chatroom'
-        moyu_dir = os.path.dirname(os.path.abspath(__file__)) + '/moyu-jpg/' + datetime.now().strftime('%m-%d-%Y') + '.jpg'
-        zaobao_dir = os.path.dirname(os.path.abspath(__file__)) + '/zaobao-jpg/' + datetime.now().strftime('%m-%d-%Y') + '.jpg'
+        moyu_dir = os.path.dirname(os.path.abspath(__file__)) + '/moyu-jpg/' + datetime.now().strftime(
+            '%m-%d-%Y') + '.jpg'
+        zaobao_dir = os.path.dirname(os.path.abspath(__file__)) + '/zaobao-jpg/' + datetime.now().strftime(
+            '%m-%d-%Y') + '.jpg'
 
         self.sendTextMsg('早上好☀️家人萌~', roomIdDachang, '')
         moyuRes = self.wcf.send_image(moyu_dir, roomIdDachang)
@@ -188,22 +195,22 @@ class Robot(Job):
             if msg.roomid not in self.config.GROUPS:  # 不在配置的响应的群列表里，忽略
                 return
 
-            if msg.is_at(self.wxid):   # 被@
+            if msg.is_at(self.wxid):  # 被@
                 self.toAt(msg)
 
-            else:                # 其他消息
+            else:  # 其他消息
                 self.toChengyu(msg)
 
             return  # 处理完群聊信息，后面就不需要处理了
 
         # 非群聊信息，按消息类型进行处理
-        if msg.type == 37:     # 好友请求
+        if msg.type == 37:  # 好友请求
             self.autoAcceptFriendRequest(msg)
 
         elif msg.type == 10000:  # 系统信息
             self.sayHiToNewFriend(msg)
 
-        elif msg.type == 0x01:   # 文本消息
+        elif msg.type == 0x01:  # 文本消息
             # 让配置加载更灵活，自己可以更新配置。也可以利用定时任务更新。
             if msg.from_self():
                 if msg.content == "^更新$":
@@ -271,7 +278,7 @@ class Robot(Job):
         格式: {"wxid": "NickName"}
         """
         contacts = self.wcf.query_sql("MicroMsg.db", "SELECT UserName, NickName FROM Contact;")
-        return {contact["UserName"]: contact["NickName"]for contact in contacts}
+        return {contact["UserName"]: contact["NickName"] for contact in contacts}
 
     def keepRunningAndBlockProcess(self) -> None:
         """
