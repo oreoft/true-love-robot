@@ -86,8 +86,10 @@ class Robot(Job):
         """
         q = re.sub(r"@.*?[\u2005|\s]", "", msg.content).replace(" ", "")
         if  q.startswith('查询'):  # 如果是特殊任务
+            self.LOG.info(f"收到:{msg.sender}, 查询任务:{msg}")
             rsp = self.searchTask.do_search(q)
         elif q.startswith('执行'):
+            self.LOG.info(f"收到:{msg.sender}, 执行任务:{msg}")
             rsp = self.runTask.do_run(q, msg.sender)
         elif q.startswith('claude') and self.claude: # 如果是claude并且不为空
             rsp = self.claude.get_answer(q, (msg.roomid if msg.from_group() else msg.sender), msg.sender)
