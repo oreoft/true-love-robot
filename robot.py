@@ -161,24 +161,24 @@ class Robot(Job):
     def noticeMoyuSchedule(self):
         roomIdDachang = '20923342619@chatroom'
         roomIdB = '34977591657@chatroom'
-        # roomId = '2666401439@chatroom'
+        roomIdLiu = '39295953189@chatroom'
+
+        self.sendDailyNotice(roomIdDachang)
+        self.sendDailyNotice(roomIdB)
+        self.sendDailyNotice(roomIdLiu)
+        return True
+
+    def sendDailyNotice(self, roomId):
         moyu_dir = os.path.dirname(os.path.abspath(__file__)) + '/moyu-jpg/' + datetime.now().strftime(
             '%m-%d-%Y') + '.jpg'
         zaobao_dir = os.path.dirname(os.path.abspath(__file__)) + '/zaobao-jpg/' + datetime.now().strftime(
-            '%m-%d-%Y') + '.jpg'
+        '%m-%d-%Y') + '.jpg'
 
-        self.sendTextMsg('早上好☀️家人萌~', roomIdDachang, '')
-        moyuRes = self.wcf.send_image(moyu_dir, roomIdDachang)
-        zaobaoRes = self.wcf.send_image(zaobao_dir, roomIdDachang)
+        self.sendTextMsg('早上好☀️家人萌~', roomId, '')
+        moyuRes = self.wcf.send_image(moyu_dir, roomId)
+        zaobaoRes = self.wcf.send_image(zaobao_dir, roomId)
         self.LOG.info(f"send_image: {moyuRes}")
         self.LOG.info(f"send_image: {zaobaoRes}")
-
-        self.sendTextMsg('早上好☀️家人萌~', roomIdB, '')
-        moyuRes = self.wcf.send_image(moyu_dir, roomIdB)
-        zaobaoRes = self.wcf.send_image(zaobao_dir, roomIdB)
-        self.LOG.info(f"send_image: {moyuRes}")
-        self.LOG.info(f"send_image: {zaobaoRes}")
-        return True
 
     def processMsg(self, msg: WxMsg) -> None:
         """当接收到消息的时候，会调用本方法。如果不实现本方法，则打印原始消息。
