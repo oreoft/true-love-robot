@@ -24,7 +24,7 @@ class RunTask:
         return '该执行任务无法找到'
 
     def runOvlerlcDeploy(self, num: int) -> str:
-        url = f"https://api.github.com/repos/oreoft/overlc-backend/actions/workflows/ci-prod-publish{num}.yml/dispatches"
+        url = f"https://api.github.com/repos/oreoft/overlc-backend-n/actions/workflows/ci-prod-publish{num}.yml/dispatches"
         payload = json.dumps({
             "ref": "master"
         })
@@ -33,7 +33,7 @@ class RunTask:
             'Authorization': f'token {self.token}',
             'Content-Type': 'application/json'
         }
-        requests.request("POST", url, headers=headers, data=payload)
+        print(requests.request("POST", url, headers=headers, data=payload))
         return "命令发送成功, 请等待部署平台结果"
 
 
