@@ -162,10 +162,12 @@ class Robot(Job):
         roomIdDachang = '20923342619@chatroom'
         roomIdB = '34977591657@chatroom'
         roomIdLiu = '39295953189@chatroom'
+        roomIdWuhan = '20624707540@chatroom'
 
         self.sendDailyNotice(roomIdDachang)
         self.sendDailyNotice(roomIdB)
         self.sendDailyNotice(roomIdLiu)
+        self.sendDailyNotice(roomIdWuhan)
         return True
 
     def sendDailyNotice(self, roomId):
