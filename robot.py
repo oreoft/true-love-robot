@@ -170,6 +170,20 @@ class Robot(Job):
         self.sendDailyNotice(roomIdWuhan)
         return True
 
+    def noticeCardSchedule(self):
+        # roomId = '39190072732@chatroom'
+        roomId = '2666401439@chatroom'
+        card_user: dict = self.config.GITHUB['card_user']
+        msg = "今日结余一览\n\n"
+        result = self.runTask.queryCafeteriaCardRecordAll()
+        for key, value in card_user.items():
+            try:
+                msg += key + '\n' + result[value] + '\n\n'
+            except KeyError:
+                pass
+        self.sendTextMsg(msg, roomId)
+        return True
+
     def sendDailyNotice(self, roomId):
         moyu_dir = os.path.dirname(os.path.abspath(__file__)) + '/moyu-jpg/' + datetime.now().strftime(
             '%m-%d-%Y') + '.jpg'

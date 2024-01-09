@@ -65,6 +65,7 @@ def main():
     robot.onEveryTime("20:00", asyncDownloadFile)
     robot.onEveryTime("20:01", asyncDownloadMoyuFile)
     robot.onEveryTime("20:05", robot.noticeMoyuSchedule)
+    robot.onEveryTime("22:00", robot.noticeCardSchedule())
     # 测试
     # robot.onEverySeconds(30, robot.noticeAoYuanschedule)
     # robot.onEverySeconds(40, robot.noticeMoyuSchedule)

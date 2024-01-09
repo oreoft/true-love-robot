@@ -11,7 +11,7 @@ class RunTask:
     def __init__(self, config: dict) -> None:
         self.token = config['token']
         self.allowUser = config['allow_user']
-        self.card_user = config['card_user']
+        self.card_user: dict = config['card_user']
         print("RunTask start...")
 
     def do_run(self, question: str, wix: str) -> str:
@@ -24,11 +24,11 @@ class RunTask:
                 return "该执行任务您没有执行权限哦"
             return self.runOvlerlcDeploy(2)
         if '刷卡' in question:
-            if wix not in self.card_user:
+            if wix not in self.card_user.values():
                 return "该执行任务您没有执行权限哦"
             return self.deductCafeteriaCardRecord(wix)
         if '查卡' in question:
-            if wix not in self.card_user:
+            if wix not in self.card_user.values():
                 return "该执行任务您没有执行权限哦"
             return self.queryCafeteriaCardRecord(wix)
         return '该执行任务无法找到'
@@ -45,6 +45,39 @@ class RunTask:
         }
         print(requests.request("POST", url, headers=headers, data=payload))
         return "命令发送成功, 请等待部署平台结果"
+
+    def queryCafeteriaCardRecordAll(self):
+        results = {}
+        try:
+            # 读取次数记录
+            with open("cardRecord.json", "r") as file:
+                record = json.load(file)
+
+            # 读取刷卡记录
+            with open("cardSwipeRecords.json", "r") as file:
+                swipe_records = json.load(file)
+
+            for wix in record:
+                if record[wix] > 0:
+                    result = f"当前还剩下[{record[wix]}]次"
+                else:
+                    result = "无效的卡号或次数不足"
+
+                # 筛选特定卡号的最近 10 条记录
+                recent_swipes = [r for r in swipe_records if r["cardNumber"] == wix][-10:]
+                recent_swipes.reverse()
+                result += f"\n最近的刷卡记录:\n" + "\n".join([f"{r['currentTime']}" for r in recent_swipes])
+
+                results[wix] = result
+
+        except FileNotFoundError:
+            return "记录文件不存在"
+        except json.JSONDecodeError:
+            return "记录文件格式错误"
+        except KeyError:
+            return "某些卡号在刷卡记录中不存在"
+
+        return results
 
     def queryCafeteriaCardRecord(self, wix):
         try:
@@ -124,4 +157,12 @@ if __name__ == "__main__":
 
     c = Config()
     runTask = RunTask(c.GITHUB)
-    print(runTask.queryCafeteriaCardRecord("123"))
+    card_user: dict = c.GITHUB['card_user']
+    msg = "今日结余一览\n\n"
+    result = runTask.queryCafeteriaCardRecordAll()
+    for key, value in card_user.items():
+        try:
+            msg += key + '\n' + result[value] + '\n\n'
+        except KeyError:
+            pass
+    print(msg)
