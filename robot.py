@@ -171,8 +171,8 @@ class Robot(Job):
         return True
 
     def noticeCardSchedule(self):
-        # roomId = '39190072732@chatroom'
-        roomId = '2666401439@chatroom'
+        roomId = '39190072732@chatroom'
+        # roomId = '2666401439@chatroom'
         card_user: dict = self.config.GITHUB['card_user']
         msg = "今日结余一览\n\n"
         result = self.runTask.queryCafeteriaCardRecordAll()
